@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!-- Teledyne Workhorse Navigator Doppler Velocity Logger (DVL) utilizing the
+     WHOI DSL Gazebo environment DVL plugin -->
+<sdf version="1.6">
+  <model name="teledyne_whn_dsl">
+    <link name="whn_base_link">
+      <pose>0 0 0 0 0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 0 0</pose>
+        <mass>15.8</mass>
+        <inertia>
+          <ixx>0.1287917645</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.1287917645</iyy>
+          <iyz>0</iyz>
+          <izz>0.100162204</izz>
+        </inertia>
+      </inertial>
+      <velocity_decay/>
+      <gravity>0</gravity>
+
+      <sensor
+        name="teledyne_whn_dsl" type="custom"
+        gz:type="dvl">
+        <pose>0 0 0 0 0 0</pose>
+        <always_on>1</always_on>
+        <update_rate>7</update_rate>
+        <topic>/dvl/velocity</topic>
+        <gz:dvl>
+          <type>phased_array</type>
+          <arrangement degrees="true">
+            <beam id="1">
+              <aperture>4</aperture>
+              <rotation>-135</rotation>
+              <tilt>30</tilt>
+            </beam>
+            <beam>
+              <aperture>4</aperture>
+              <rotation>135</rotation>
+              <tilt>30</tilt>
+            </beam>
+            <beam>
+              <aperture>4</aperture>
+              <rotation>45</rotation>
+              <tilt>30</tilt>
+            </beam>
+            <beam>
+              <aperture>4</aperture>
+              <rotation>-45</rotation>
+              <tilt>30</tilt>
+            </beam>
+          </arrangement>
+          <tracking>
+            <water_mass_mode>
+              <when>best</when>
+              <water_velocity>
+                <x>0.</x>
+                <y>0.</y>
+                <z>0.</z>
+              </water_velocity>
+              <boundaries>
+                <near>10.</near>
+                <far>100.</far>
+              </boundaries>
+              <bins>10</bins>
+              <noise type="gaussian">
+                <stddev>0.0075</stddev>
+              </noise>
+              <visualize>true</visualize>
+            </water_mass_mode>
+            <bottom_mode>
+              <when>best</when>
+              <noise type="gaussian">
+                <stddev>0.005</stddev>
+              </noise>
+              <visualize>true</visualize>
+            </bottom_mode>
+          </tracking>
+          <maximum_range>90.</maximum_range>
+          <minimum_range>0.7</minimum_range>
+          <!-- ENU to FSD -->
+          <reference_frame>0 0 0 3.14 0 -1.57</reference_frame>
+        </gz:dvl>
+      </sensor>
+
+      <self_collide>0</self_collide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <visual name="whn_base_link_visual">
+        <pose>0 0 0 0 3.141592653589793 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://meshes/teledyne_whn/WorkhorseNavigator.dae</uri>
+          </mesh>
+        </geometry>
+        <transparency>0</transparency>
+        <cast_shadows>1</cast_shadows>
+      </visual>
+      <collision name="whn_base_link_collision">
+        <laser_retro>0</laser_retro>
+        <max_contacts>10</max_contacts>
+        <pose>0 0 0 0 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.1126</radius>
+            <length>0.2445</length>
+          </cylinder>
+        </geometry>
+      </collision>
+    </link>
+    <static>1</static>
+    <allow_auto_disable>1</allow_auto_disable>
+
+    <plugin
+      filename="DVLBridge"
+      name="dave_ros_gz_plugins::DVLBridge">
+      <topic>/dvl/velocity</topic>
+    </plugin>
+
+  </model>
+</sdf>
