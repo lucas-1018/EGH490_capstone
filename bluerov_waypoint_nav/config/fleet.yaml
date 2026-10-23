@@ -1,0 +1,44 @@
+# Fleet settings for fleet.launch.py / fleet_sim.launch.py / fleet_survey.launch.py
+#
+# Change num_drones and relaunch -- the extra drones' model and config files
+# are generated for you (and removed again on shutdown).
+
+num_drones: 3            # 1 .. 8 (capped at the number of sweep lanes the polygon needs)
+
+# shared_edges: all drones sweep the whole polygon side by side; each aligns to the east
+#               edge its neighbour is measuring live (no fixed cut, no seam overlap)
+# strips:       the polygon is cut into one fixed strip per drone (drones don't talk)
+fleet_mode: shared_edges
+
+world_name: dave_ocean_waves
+
+# Survey polygon, in DRONE 1's odometry frame (relative to where drone 1 spawns)
+polygon_x: [0.0, 40.0, 45.0, 20.0, 0.0]
+polygon_y: [0.0, 5.0, 25.0, 35.0, 22.0]
+
+# Where drone 1 spawns. Drone k spawns spacing_y metres further north than
+# drone k-1 (same x, z, yaw).
+spawn:
+  x: 0.0
+  y: 0.0
+  z: -75.0
+  yaw: 1.5708
+  spacing_y: 6.0
+
+survey:
+  altitude: 5.0            # m above the seabed
+  fov_deg: 90.0            # camera horizontal field of view
+  lane_overlap: 0.5        # m of image overlap between neighbouring sweeps
+  step_length: 1.5         # m between waypoints along a sweep
+  descent_rate: 0.4        # m/s while looking for the seabed
+  max_z_vel: 0.4           # m/s cap on vertical speed
+  sonar_max_range: 30.0    # must match the sonar range in model.sdf
+  output_root: /tmp/bluerov_survey_images   # each drone writes to <root>/drone<k>/
+
+timing:                    # seconds
+  spawn_delay: 30          # wait between spawning one drone and the next
+  survey_delay: 45         # wait after the LAST drone spawns before the survey starts
+
+# Drone 1 keeps DAVE's keyboard teleop / joystick bridge (they use fixed
+# ports, so only one drone can have them). Extra drones never get them.
+drone1_teleop: true
